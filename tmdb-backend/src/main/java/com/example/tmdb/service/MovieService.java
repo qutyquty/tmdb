@@ -1,0 +1,155 @@
+package com.example.tmdb.service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import com.example.tmdb.dto.ActorDetailResponse;
+import com.example.tmdb.dto.ActorMovieCreditsResponse;
+import com.example.tmdb.dto.CreditsResponse;
+import com.example.tmdb.dto.MovieDetailResponse;
+import com.example.tmdb.dto.MovieResponse;
+
+import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
+
+@Service
+@RequiredArgsConstructor
+public class MovieService {
+	
+	private final WebClient webClient;
+	
+	@Value("${tmdb.api.key}")
+	private String apiKey;
+	
+	// 인기 영화	
+	public Mono<MovieResponse> getPopularMovies() {
+		return webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/movie/popular")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR") // 한국어 추가
+						.build())
+				.retrieve()
+				.bodyToMono(MovieResponse.class);
+	}
+	
+	// 인기 TVShow	
+	public Mono<MovieResponse> getPopularTVShows() {
+		return webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/tv/popular")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR") // 한국어 추가
+						.build())
+				.retrieve()
+				.bodyToMono(MovieResponse.class);
+	}
+	
+	// 영화 상세 조회
+	public Mono<MovieDetailResponse> getMovieDetail(Long movieId) {
+		Mono<MovieDetailResponse> detailMono = webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/movie/{id}")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR")
+						.build(movieId))
+				.retrieve()
+				.bodyToMono(MovieDetailResponse.class);
+		
+		Mono<CreditsResponse> creditsMono = webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/movie/{id}/credits")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR")
+						.build(movieId))
+				.retrieve()
+				.bodyToMono(CreditsResponse.class);
+		
+		return Mono.zip(detailMono, creditsMono)
+				.map(tuple -> {
+					MovieDetailResponse detail = tuple.getT1();
+					CreditsResponse credits = tuple.getT2();
+					detail.setCast(credits.getCast());
+					return detail;
+				});
+	}
+	
+	// 영화 검색
+	public Mono<MovieResponse> searchMovies(String query) {
+		return webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/search/movie")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR")
+						.queryParam("query", query)
+						.build())
+				.retrieve()
+				.bodyToMono(MovieResponse.class);
+	}
+	
+	// 배우 출연 영화 검색
+	public Mono<ActorMovieCreditsResponse> getActorMovieCredits(Long actorId) {
+		return webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/person/{id}/movie_credits")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR")
+						.build(actorId))
+				.retrieve()
+				.bodyToMono(ActorMovieCreditsResponse.class)
+				.map(response -> {
+					// release_date 기준 최신순 정렬
+					List<ActorMovieCreditsResponse.MovieSummary> sorted = response.getCast().stream()
+							.filter(m -> m.getRelease_date() != null && !m.getRelease_date().isEmpty())
+							.sorted((m1, m2) -> m2.getRelease_date().compareTo(m1.getRelease_date()))
+							.collect(Collectors.toList());
+					response.setCast(sorted);
+					return response;
+				});
+	}
+	
+	public Mono<ActorDetailResponse> getActorDetailWithMovies(Long actorId) {
+		// 배우 기본 정보
+		Mono<ActorDetailResponse.Actor> actorMono = webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/person/{id}")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR")
+						.build(actorId))
+				.retrieve()
+				.bodyToMono(ActorDetailResponse.Actor.class);
+		
+		// 출연 영화 목록
+		Mono<ActorDetailResponse> moviesMono = webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/person/{id}/movie_credits")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR")
+						.build(actorId))
+				.retrieve()
+				.bodyToMono(ActorDetailResponse.class);
+		
+		// 두 API 결과 합치기
+		return Mono.zip(actorMono, moviesMono)
+				.map(tuple -> {
+					ActorDetailResponse.Actor actor = tuple.getT1();
+					ActorDetailResponse credits = tuple.getT2();
+					
+					// 최신순 정렬
+					List<ActorDetailResponse.MovieSummary> sortedMovies = credits.getCast().stream()
+							.filter(m -> m.getRelease_date() != null && !m.getRelease_date().isEmpty())
+							.sorted((m1, m2) -> m2.getRelease_date().compareTo(m1.getRelease_date()))
+							.collect(Collectors.toList());
+					
+					ActorDetailResponse response = new ActorDetailResponse();
+					response.setActor(actor);
+					response.setCast(sortedMovies);
+					return response;
+				});
+	}
+
+}
