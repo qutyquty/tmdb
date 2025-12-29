@@ -93,7 +93,7 @@ const MovieDetailPage = () => {
                 <Row className='mt-2'>
                   {movie.cast && movie.cast.slice(0, 10).map((actor) => (
                     <Col md={4} key={actor.id} className='mb-3'>
-                      <Card className='text-center shadow-sm' onClick={() => navigate(`/actors/${actor.id}/movies`)} style={{ cursor: "pointer" }}>
+                      <Card className='text-center shadow-sm' onClick={() => navigate(`/person/${actor.id}/credits`)} style={{ cursor: "pointer" }}>
                         <Card.Img variant='top'
                           src={actor.profile_path 
                             ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`

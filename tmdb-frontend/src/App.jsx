@@ -7,6 +7,10 @@ import HomePage from "./pages/HomePage"
 import MovieDetailPage from "./pages/MovieDetailPage"
 import ActorMoviesPage from "./pages/ActorMoviesPage"
 import SearchPage from "./pages/SearchPage"
+import MoviesPage from "./pages/MoviesPage"
+import TvShowsPage from "./pages/TvShowsPage"
+import TvShowDetailPage from "./pages/TvShowDetailPage"
+import ActorDetailPage from "./pages/ActorDetailPage"
 
 // 공통 컴포넌트
 import Navbar from "./components/Navbar"
@@ -25,6 +29,10 @@ const App = () => {
             <Route path="/movies/:id" element={<MovieDetailPage />} />
             <Route path="/actors/:id/movies" element={<ActorMoviesPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/movies" element={<MoviesPage />} />
+            <Route path="/tvshows" element={<TvShowsPage />} />
+            <Route path="/tv/:id" element={<TvShowDetailPage />} />
+            <Route path="/person/:id/credits" element={<ActorDetailPage />} />
           </Routes>
         </main>
         <Footer />
