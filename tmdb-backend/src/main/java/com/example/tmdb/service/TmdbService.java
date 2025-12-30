@@ -29,6 +29,7 @@ public class TmdbService {
 	@Value("${tmdb.api.key}")
 	private String apiKey;
 	
+	// tmdb 영화 api 호출
 	// 인기 영화	
 	public Mono<MovieResponse> getPopularMovies() {
 		return webClient.get()
@@ -39,18 +40,6 @@ public class TmdbService {
 						.build())
 				.retrieve()
 				.bodyToMono(MovieResponse.class);
-	}
-	
-	// 인기 TVShow	
-	public Mono<TvResponse> getPopularTVShows() {
-		return webClient.get()
-				.uri(uriBuilder -> uriBuilder
-						.path("/tv/popular")
-						.queryParam("api_key", apiKey)
-						.queryParam("language", "ko-KR") // 한국어 추가
-						.build())
-				.retrieve()
-				.bodyToMono(TvResponse.class);
 	}
 	
 	// 영화 상세 조회
@@ -95,43 +84,6 @@ public class TmdbService {
 				.bodyToMono(MovieResponse.class);
 	}
 	
-	// 티비쇼 검색
-	public Mono<TvResponse> searchTvShows(String query) {
-		return webClient.get()
-				.uri(uriBuilder -> uriBuilder
-						.path("/search/tv")
-						.queryParam("api_key", apiKey)
-						.queryParam("language", "ko-KR")
-						.queryParam("query", query)
-						.build())
-				.retrieve()
-				.bodyToMono(TvResponse.class);
-	}
-	
-	// 티비쇼 상세 정보 가져오기
-	public Mono<TvDetailResponse> getTvShowDetail(Long tvId) {
-		return webClient.get()
-				.uri(uriBuilder -> uriBuilder
-						.path("/tv/{id}")
-						.queryParam("api_key", apiKey)
-						.queryParam("language", "ko-KR")
-						.build(tvId))
-				.retrieve()
-				.bodyToMono(TvDetailResponse.class);
-	}
-	
-	// 티비쇼 출연 배우 가져오기
-	public Mono<TvCreditsResponse> getTvShowCredits(Long tvId) {
-		return webClient.get()
-				.uri(uriBuilder -> uriBuilder
-						.path("/tv/{id}/credits")
-						.queryParam("api_key", apiKey)
-						.queryParam("language", "ko-KR")
-						.build(tvId))
-				.retrieve()
-				.bodyToMono(TvCreditsResponse.class);
-	}
-	
 	// 배우 출연 영화 목록
 	public Mono<ActorMovieCreditsResponse> getActorMovieCredits(Long actorId) {
 		return webClient.get()
@@ -147,27 +99,6 @@ public class TmdbService {
 					List<ActorMovieCreditsResponse.MovieSummary> sorted = response.getCast().stream()
 							.filter(m -> m.getRelease_date() != null && !m.getRelease_date().isEmpty())
 							.sorted((m1, m2) -> m2.getRelease_date().compareTo(m1.getRelease_date()))
-							.collect(Collectors.toList());
-					response.setCast(sorted);
-					return response;
-				});
-	}
-	
-	// 배우 출연 TV 목록
-	public Mono<ActorTvCreditsResponse> getActorTvCredits(Long actorId) {
-		return webClient.get()
-				.uri(uriBuilder -> uriBuilder
-						.path("/person/{id}/tv_credits")
-						.queryParam("api_key", apiKey)
-						.queryParam("language", "ko-KR")
-						.build(actorId))
-				.retrieve()
-				.bodyToMono(ActorTvCreditsResponse.class)
-				.map(response -> {
-					// release_date 기준 최신순 정렬
-					List<ActorTvCreditsResponse.TvSummary> sorted = response.getCast().stream()
-							.filter(tv -> tv.getFirst_air_date() != null && !tv.getFirst_air_date().isEmpty())
-							.sorted((t1, t2) -> t2.getFirst_air_date().compareTo(t1.getFirst_air_date()))
 							.collect(Collectors.toList());
 					response.setCast(sorted);
 					return response;
@@ -214,5 +145,79 @@ public class TmdbService {
 					return response;
 				});
 	}
+	// ==============================================================================
 
+	// tmdb 티비쇼 api 호출
+	// 인기 티비쇼	
+	public Mono<TvResponse> getPopularTVShows() {
+		return webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/tv/popular")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR") // 한국어 추가
+						.build())
+				.retrieve()
+				.bodyToMono(TvResponse.class);
+	}
+	
+	
+	// 티비쇼 검색
+	public Mono<TvResponse> searchTvShows(String query) {
+		return webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/search/tv")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR")
+						.queryParam("query", query)
+						.build())
+				.retrieve()
+				.bodyToMono(TvResponse.class);
+	}
+	
+	// 티비쇼 상세 정보 가져오기
+	public Mono<TvDetailResponse> getTvShowDetail(Long tvId) {
+		return webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/tv/{id}")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR")
+						.build(tvId))
+				.retrieve()
+				.bodyToMono(TvDetailResponse.class);
+	}
+	
+	// 티비쇼 출연 배우 가져오기
+	public Mono<TvCreditsResponse> getTvShowCredits(Long tvId) {
+		return webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/tv/{id}/credits")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR")
+						.build(tvId))
+				.retrieve()
+				.bodyToMono(TvCreditsResponse.class);
+	}
+
+	
+	// 배우 출연 TV 목록
+	public Mono<ActorTvCreditsResponse> getActorTvCredits(Long actorId) {
+		return webClient.get()
+				.uri(uriBuilder -> uriBuilder
+						.path("/person/{id}/tv_credits")
+						.queryParam("api_key", apiKey)
+						.queryParam("language", "ko-KR")
+						.build(actorId))
+				.retrieve()
+				.bodyToMono(ActorTvCreditsResponse.class)
+				.map(response -> {
+					// release_date 기준 최신순 정렬
+					List<ActorTvCreditsResponse.TvSummary> sorted = response.getCast().stream()
+							.filter(tv -> tv.getFirst_air_date() != null && !tv.getFirst_air_date().isEmpty())
+							.sorted((t1, t2) -> t2.getFirst_air_date().compareTo(t1.getFirst_air_date()))
+							.collect(Collectors.toList());
+					response.setCast(sorted);
+					return response;
+				});
+	}
+	
 }

@@ -8,6 +8,7 @@ const DetailLayout = ({
     overview,
     releaseDate,
     extraInfo,
+    genres,
     credits
 }) => {
     const navigate = useNavigate();
@@ -25,6 +26,10 @@ const DetailLayout = ({
                 <p><strong>개봉/첫 방영일:</strong> {releaseDate}</p>
                 {extraInfo && <p><strong>추가 정보:</strong> {extraInfo}</p>}
                 <p>{overview}</p>
+                <p>
+                    <strong>장르:</strong>{" "}
+                    {genres && genres.map((genre) => genre.name).join(", ")}
+                </p>
                 <h4>출연 배우</h4>
                 <ul>
                     {credits?.map(actor => (

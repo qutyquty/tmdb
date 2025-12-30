@@ -31,13 +31,16 @@ const TvShowsPage = () => {
         } catch (error) {
             console.error("티비쇼 검색 실패: ", error);
         }
-    };    
+    };
+
+    const backdropUrl = tvShows.length > 0
+        ? `https://image.tmdb.org/t/p/w780${tvShows[0].backdrop_path}`
+        : "https://placehold.co/800x200?text=Search+Background";
 
   return (
     <Container className="mt-4">
-        <SearchBar onSearch={searchTvShowsProp} placeholder="티비쇼 제목 검색" />
-        <h3 className='mt-4'>인기 티비쇼</h3>
-        <Row>
+        <SearchBar onSearch={searchTvShowsProp} placeholder="티비쇼 제목 검색" backdropUrl={backdropUrl} />
+        <Row className='mt-4'>
             {tvShows.map((tv) => (
                 <Col key={tv.id} xs={6} sm={4} lg={3} className='mb-4'>
                     <ContentCard 

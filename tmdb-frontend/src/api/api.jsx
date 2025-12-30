@@ -40,13 +40,24 @@ export const searchMovies = async (query) => {
     }
 };
 
-// 배우 상세 조회 API
+// 배우 정보+출연영화 목록 조회
 export const getActorDetail = async (id) => {
     try {
         const response = await api.get(`/movies/actors/${id}/detail`);
         return response.data; // { actor: {...}, cast: [...] } 형태
     } catch (error) {
-        console.error("배우 상세 조회 API 호출 에러: ", error);
+        console.error("배우 정보+출연영화 목록 조회 에러: ", error);
+        throw error;
+    }
+};
+
+// 배우 출연 영화 목록 가져오기
+export const getActorMovieCredits = async (actorId) => {
+    try {
+        const response = await api.get(`/person/${actorId}/movie_credits`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching actor movie credits: ", error);
         throw error;
     }
 };
@@ -93,17 +104,6 @@ export const getTvShowCredits = async (id) => {
         return response.data;
     } catch (error) {
         console.error("Error fetching tv credits: ", error);
-        throw error;
-    }
-};
-
-// 배우 출연 영화 목록 가져오기
-export const getActorMovieCredits = async (actorId) => {
-    try {
-        const response = await api.get(`/person/${actorId}/movie_credits`);
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching actor movie credits: ", error);
         throw error;
     }
 };

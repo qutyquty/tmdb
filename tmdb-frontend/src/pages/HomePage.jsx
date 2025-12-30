@@ -1,38 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Spinner, Card, Form, Button } from 'react-bootstrap'
 
-import { getPopularMovies, searchMovies } from '../api/api';
-import MovieCard from "../components/MovieCard";
+import { getPopularMovies, getPopularTvShows } from '../api/api';
+import ContentCard from "../components/ContentCard";
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
+  const [tvShows, setTvShows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPopularMovies = async () => {
+    const fetchPopularData = async () => {
       try {
-        const data = await getPopularMovies();
-        setMovies(data.results);
+        const mData = await getPopularMovies();
+        setMovies(mData.results.slice(0, 10));
+
+        const tData = await getPopularTvShows();
+        setTvShows(tData.results.slice(0, 10));
       } catch (error) {
-        console.error("인기 영화 조회 오류: ", error);
+        console.error("인기 영화/티비쇼 조회 오류: ", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPopularMovies();
+    fetchPopularData();
   }, []);
-
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (query.trim() === "") return;
-    const results = await searchMovies(query);
-    setSearchResults(results);
-  };
 
   if (loading) {
     return (
@@ -44,88 +37,70 @@ const HomePage = () => {
   }
 
   // 인기 영화 중 첫 번재 영화의 backdrop 이미지 URL
-  const backdropUrl = movies.length > 0
+  const mBackdropUrl = movies.length > 0
     ? `https://image.tmdb.org/t/p/w780${movies[0].backdrop_path}`
+    : "https://placehold.co/800x200?text=Search+Background";
+
+  // 인기 티비쇼 중 첫 번재 티비쇼의 backdrop 이미지 URL
+  const tBackdropUrl = tvShows.length > 0
+    ? `https://image.tmdb.org/t/p/w780${tvShows[0].backdrop_path}`
     : "https://placehold.co/800x200?text=Search+Background";
 
   return (
     <Container className="mt-4">
-      <div style={{ backgroundImage: `url(${backdropUrl})`, 
+      <div style={{ backgroundImage: `url(${mBackdropUrl})`, 
         backgroundSize: "cover", backgroundPosition: "center",
         height: "400px", display: "flex", alignItems: "flex-end",
-        padding: "20px", borderRadius: "10px", }}
+        padding: "20px", borderRadius: "10px", 
+        color: "white", fontWeight: "bold", fontSize: "2rem",
+        textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
+        }}
       >
-        {/** 검색창 */}
-        <Form onSubmit={handleSearch} className="w-100 mb-1">
-          <Row>
-            <Col md={10}>
-              <Form.Control
-                type="text"
-                placeholder="영화 제목을 입력하세요..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </Col>
-            <Col md={2}>
-              <Button type="submit" variant="primary" className="w-100">
-                검색
-              </Button>
-            </Col>
-          </Row>
-        </Form>
+        인기 영화 TOP 10        
       </div>
 
-      {/** 검색 결과 */}
-      {searchResults.length > 0 ? (
-        <>
-          <h3 className='mt-4'>검색 결과</h3>
-          <Row>
-            {searchResults.map((movie) => (
-              <Col md={3} key={movie.id} className="mb-4">
-                <Card
-                  className="h-100 text-center shadow-sm"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/movies/${movie.id}`)} // 👉 클릭 시 상세 페이지 이동
-                >
-                  <Card.Img
-                    variant="top"
-                    src={
-                      movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                        : "https://placehold.co/150x225?text=No+Image"
-                    }
-                    alt={movie.title}
-                    style={{
-                      width: "150px",
-                      height: "225px",
-                      objectFit: "cover",
-                      margin: "10px auto",
-                    }}
-                  />
-                  <Card.Body>
-                    <Card.Title style={{ fontSize: "1rem" }}>{movie.title}</Card.Title>
-                    <Card.Text style={{ fontSize: "0.85rem" }}>
-                      개봉일: {movie.release_date || "정보 없음"}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </>
-      ) : (
-        <>        
-          <h3 className='mt-4'>인기 영화</h3>
-          <Row>
-            {movies.map((movie) => (
-              <Col key={movie.title} xs={12} sm={6} md={4} lg={3} className='mb-4'>
-                <MovieCard movie={movie} />
-              </Col>
-            ))}
-          </Row>
-        </>
-      )}
-      </Container>
+      <Row className='mt-4'>
+        {movies.map((movie) => (
+          <Col key={movie.title} xs={12} sm={6} md={4} lg={3} className='mb-4'>
+              <ContentCard 
+                id={movie.id}
+                title={movie.title}
+                posterPath={movie.poster_path}
+                overview={movie.overview}
+                releaseDate={movie.release_date}
+                voteAverage={movie.vote_average}
+                type="movie"
+            />
+          </Col>
+        ))}
+      </Row>
+
+      <div style={{ backgroundImage: `url(${tBackdropUrl})`, 
+        backgroundSize: "cover", backgroundPosition: "center",
+        height: "400px", display: "flex", alignItems: "flex-end",
+        padding: "20px", borderRadius: "10px", 
+        color: "white", fontWeight: "bold", fontSize: "2rem",
+        textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
+        }}
+      >
+        인기 티비쇼 TOP 10        
+      </div>
+      <Row className='mt-4'>
+        {tvShows.map((tv) => (
+          <Col key={tv.name} xs={12} sm={6} md={4} lg={3} className='mb-4'>
+            <ContentCard 
+                id={tv.id}
+                title={tv.name}
+                posterPath={tv.poster_path}
+                overview={tv.overview}
+                releaseDate={tv.first_air_date}
+                voteAverage={tv.vote_average}
+                type="tv"
+            />
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 }
 

@@ -11,7 +11,7 @@ const MovieCard = ({ movie }) => {
         : "https://via.placeholder.com/500x750?text=No+Image"; // 포스터 없을 때 대체 이미지
 
   return (
-    <Card className='mb-4 shadow-sm' style={{ width: "18rem" }}>
+    <Card className='mb-4 shadow-sm h-100' style={{ width: "18rem" }}>
         <Card.Img variant='top' src={posterUrl} alt={movie.title} />
         <Card.Body>
             <Card.Title>{movie.title}</Card.Title>

@@ -14,15 +14,20 @@ const ContentCard = ({ id, title, posterPath, overview, releaseDate, voteAverage
   };
 
   return (
-    <Card style={{ width: '14rem', cursor: "pointer" }}
+    <Card className='mb-4 shadow-sm h-100' style={{ width: '18rem', cursor: "pointer" }}
       onClick={handleClick}
     >
         <Card.Img variant='top' src={`https://image.tmdb.org/t/p/w500${posterPath}`} />
         <Card.Body>
             <Card.Title>{title}</Card.Title>
-            <Card.Text>{overview?.slice(0, 80)} ...</Card.Text>
-            <small>{releaseDate}</small><br />
-            <small>⭐ {voteAverage}</small>
+            <Card.Subtitle className='mb-2 text-muted'>
+                {releaseDate}
+            </Card.Subtitle>
+            <Card.Text>
+                {overview
+                    ? overview.slice(0, 100) + "..."
+                    : "No decription available"}
+            </Card.Text>
         </Card.Body>
     </Card>
   );

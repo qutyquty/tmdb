@@ -22,6 +22,7 @@ public class TvResponse {
 		private String overview;
 		private String first_air_date;
 		private String poster_path;
+		private String backdrop_path;
 		private Double vote_average;
 	}
 
