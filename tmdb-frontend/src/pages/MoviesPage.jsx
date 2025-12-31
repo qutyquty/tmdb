@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
-import { getPopularMovies, searchMovies } from '../api/api';
+import { getPopularMovies, searchMovies } from '../api';
 import ContentCard from "../components/ContentCard";
 import SearchBar from '../components/SearchBar';
 
@@ -50,7 +50,6 @@ const MoviePage = () => {
                         posterPath={movie.poster_path}
                         overview={movie.overview}
                         releaseDate={movie.release_date}
-                        voteAverage={movie.vote_average}
                         type="movie"
                     />
                 </Col>

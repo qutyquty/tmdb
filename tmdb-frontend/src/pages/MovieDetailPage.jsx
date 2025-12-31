@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Container, Row, Col, Card, Badge, Spinner } from "react-bootstrap"
 
-import { getMovieDetail } from '../api/api';
+import { getMovieDetail } from '../api';
 import DetailLayoutUp from '../components/DetailLayoutUp';
 
 const MovieDetailPage = () => {
@@ -37,6 +37,7 @@ const MovieDetailPage = () => {
 
   return (
     <DetailLayoutUp
+      mtId={movie.id}
       posterPath={movie.poster_path}
       title={movie.title}
       overview={movie.overview}

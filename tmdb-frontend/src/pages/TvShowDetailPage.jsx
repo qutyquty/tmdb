@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { getTvShowDetail, getTvShowCredits } from '../api/api';
+import { getTvShowDetail, getTvShowCredits } from '../api';
 import DetailLayoutUp from '../components/DetailLayoutUp';
 
 const TvShowDetailPage = () => {
@@ -29,6 +29,7 @@ const TvShowDetailPage = () => {
 
   return (
     <DetailLayoutUp
+        mtId={tvShow.id}
         posterPath={tvShow.poster_path}
         title={tvShow.name}
         overview={tvShow.overview}

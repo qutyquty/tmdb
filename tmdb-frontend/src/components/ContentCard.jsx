@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-const ContentCard = ({ id, title, posterPath, overview, releaseDate, voteAverage, type }) => {
+const ContentCard = ({ id, title, posterPath, overview, releaseDate, type }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -23,11 +23,13 @@ const ContentCard = ({ id, title, posterPath, overview, releaseDate, voteAverage
             <Card.Subtitle className='mb-2 text-muted'>
                 {releaseDate}
             </Card.Subtitle>
-            <Card.Text>
-                {overview
-                    ? overview.slice(0, 100) + "..."
-                    : "No decription available"}
-            </Card.Text>
+            {overview !== undefined && (
+              <Card.Text>
+                  {overview && overview.trim() !== ""
+                      ? overview.slice(0, 100) + "..."
+                      : "No decription available"}
+              </Card.Text>
+            )}
         </Card.Body>
     </Card>
   );

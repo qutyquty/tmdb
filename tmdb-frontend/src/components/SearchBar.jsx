@@ -24,7 +24,7 @@ const SearchBar = ({ onSearch, placeholder, backdropUrl }) => {
                         type="text"
                         placeholder={placeholder || "검색어를 입력하세요"}
                         value={query}
-                        onChange={(e) => setQuery(e.target.value)}
+                        onChange={(e) => setQuery(e.target.value)}                        
                     />
                 </Col>
                 <Col md={2}>

@@ -2,7 +2,10 @@ import React from 'react';
 import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
+import Comments from './Comments';
+
 const DetailLayoutUp = ({
+    mtId,
     posterPath,
     title,
     overview,
@@ -37,7 +40,8 @@ const DetailLayoutUp = ({
             <Col md={4}>
                 <Card>
                     <Card.Img variant='top' src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={title} />
-                </Card>            
+                </Card>
+                <Comments mtId={mtId} />
             </Col>
             <Col md={8}>
                 <Card>
@@ -67,7 +71,7 @@ const DetailLayoutUp = ({
                             <Row className='mt-2'>
                             {credits && credits.slice(0, 10).map((actor) => (
                                 <Col md={4} key={actor.id} className='mb-3'>
-                                <Card className='text-center shadow-sm' onClick={() => navigate(`/person/${actor.id}/credits`)} style={{ cursor: "pointer" }}>
+                                <Card className='text-center shadow-sm' onClick={() => navigate(`/person/${actor.id}/detail`)} style={{ cursor: "pointer" }}>
                                     <Card.Img variant='top'
                                     src={actor.profile_path 
                                         ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`

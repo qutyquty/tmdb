@@ -118,3 +118,14 @@ export const getActorTvCredits = async (actorId) => {
         throw error;
     }
 };
+
+// 배우 정보+출연영화+출연티비 목록 조회
+export const getActorDetailUp = async (id) => {
+    try {
+        const response = await api.get(`/person/${id}/detail`);
+        return response.data;
+    } catch (error) {
+        console.error("배우 정보+출연영화+출연티비 목록 조회 에러: ", error);
+        throw error;
+    }
+};

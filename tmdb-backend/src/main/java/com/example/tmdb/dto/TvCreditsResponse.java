@@ -7,14 +7,15 @@ import lombok.Data;
 @Data
 public class TvCreditsResponse {
 	
-	private List<Cast> cast;
+	private List<TvCast> cast;
 	
 	@Data
-	public static class Cast {
+	public static class TvCast {
 		private Long id;
 		private String name;
-		private String character;
 		private String profile_path;
+		private String first_air_date;
+		private String character;
 	}
 
 }

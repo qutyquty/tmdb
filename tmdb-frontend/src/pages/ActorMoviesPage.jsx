@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Container, Row, Col, Card, Spinner } from 'react-bootstrap'
 
-import { getActorDetail } from '../api/api'
+import { getActorDetail } from '../api'
 
 const ActorMoviesPage = () => {
     const { id } = useParams()

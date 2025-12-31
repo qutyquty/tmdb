@@ -11,6 +11,7 @@ import MoviesPage from "./pages/MoviesPage"
 import TvShowsPage from "./pages/TvShowsPage"
 import TvShowDetailPage from "./pages/TvShowDetailPage"
 import ActorDetailPage from "./pages/ActorDetailPage"
+import ActorDetailUpPage from "./pages/ActorDetailUpPage"
 
 // 공통 컴포넌트
 import Navbar from "./components/Navbar"
@@ -33,6 +34,7 @@ const App = () => {
             <Route path="/tvshows" element={<TvShowsPage />} />
             <Route path="/tv/:id" element={<TvShowDetailPage />} />
             <Route path="/person/:id/credits" element={<ActorDetailPage />} />
+            <Route path="/person/:id/detail" element={<ActorDetailUpPage />} />
           </Routes>
         </main>
         <Footer />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Row, Col, Spinner, Card, Form, Button } from 'react-bootstrap'
 
-import { getPopularMovies, getPopularTvShows } from '../api/api';
+import { getPopularMovies, getPopularTvShows } from '../api';
 import ContentCard from "../components/ContentCard";
 
 const HomePage = () => {
@@ -68,7 +68,6 @@ const HomePage = () => {
                 posterPath={movie.poster_path}
                 overview={movie.overview}
                 releaseDate={movie.release_date}
-                voteAverage={movie.vote_average}
                 type="movie"
             />
           </Col>
@@ -83,7 +82,7 @@ const HomePage = () => {
         textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
         }}
       >
-        인기 티비쇼 TOP 10        
+        인기 드라마/쇼 TOP 10        
       </div>
       <Row className='mt-4'>
         {tvShows.map((tv) => (
@@ -94,7 +93,6 @@ const HomePage = () => {
                 posterPath={tv.poster_path}
                 overview={tv.overview}
                 releaseDate={tv.first_air_date}
-                voteAverage={tv.vote_average}
                 type="tv"
             />
           </Col>

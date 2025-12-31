@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Tabs, Tab } from 'react-bootstrap';
 
-import { getActorMovieCredits, getActorTvCredits } from '../api/api';
+import { getActorMovieCredits, getActorTvCredits } from '../api';
 
 const ActorDetailPage = () => {
     const { id } = useParams();

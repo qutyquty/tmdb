@@ -3,7 +3,7 @@ import axios from "axios";
 import { Container, Row, Col, Card, Form, Button, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import { searchMovies } from '../api/api';
+import { searchMovies } from '../api';
 
 function SearchPage() {
   const [query, setQuery] = useState("");

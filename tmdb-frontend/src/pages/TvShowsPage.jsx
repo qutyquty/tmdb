@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
-import { getPopularTvShows, searchTvShows } from '../api/api';
+import { getPopularTvShows, searchTvShows } from '../api';
 import ContentCard from "../components/ContentCard";
 import SearchBar from '../components/SearchBar';
 
@@ -49,7 +49,6 @@ const TvShowsPage = () => {
                         posterPath={tv.poster_path}
                         overview={tv.overview}
                         releaseDate={tv.first_air_date}
-                        voteAverage={tv.vote_average}
                         type="tv"
                     />
                 </Col>

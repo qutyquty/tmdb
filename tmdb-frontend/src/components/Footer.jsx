@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className='bg-dark text-light text-center py-3 fixed-bottom'>
         <Container>
-            <small>© 2025 My Movie App. All rights reserved.</small>
+            <small>© 2025 My Movie/Drama/Show App. All rights reserved.</small>
         </Container>
     </footer>
   )
