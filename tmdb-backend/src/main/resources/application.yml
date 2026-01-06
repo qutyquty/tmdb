@@ -19,7 +19,5 @@ spring:
     hibernate:
       ddl-auto: update
 
-tmdb:
-  api:
-    base-url: https://api.themoviedb.org/3 #${TMDB_API_BASE_URL}   
-    key: a5b57bbbffa91e1b1a044b0516974c3c #${TMDB_API_KEY}   
+  profiles:
+    include: sum
